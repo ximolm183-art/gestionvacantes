@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<nav th:fragment="navbar-aspirante" class="navbar navbar-expand-lg navbar-dark bg-success">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/aspirante/dashboard">
+      <i class="fas fa-user-graduate"></i> Portal de Empleo
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAspirante">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarAspirante">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/aspirante/dashboard">
+            <i class="fas fa-home"></i> Inicio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/aspirante/vacantes">
+            <i class="fas fa-search"></i> Buscar Vacantes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/aspirante/mis-solicitudes">
+            <i class="fas fa-file-invoice"></i> Mis Solicitudes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/aspirante/perfil">
+            <i class="fas fa-id-card"></i> Mi Perfil
+          </a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+                <span class="text-white me-3">
+                    <i class="fas fa-user-circle"></i>
+                    <span th:text="${session.aspiranteNombre}">Usuario</span>
+                </span>
+        <a href="/logout" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+</body>
+</html>

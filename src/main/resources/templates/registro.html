@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .error-message {
+            color: #c33;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link a:hover {
+            color: #667eea;
+        }
+
+        #empresaGroup {
+            display: none;
+        }
+
+        #habilidadesGroup {
+        display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <h2>Crear Cuenta</h2>
+    <p class="subtitle">Regístrate para acceder al sistema</p>
+
+    <div th:if="${error}" class="alert alert-error">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <form th:action="@{/registro}" th:object="${registroDTO}" method="post">
+
+        <div class="form-group">
+            <label for="rol">Tipo de Usuario *</label>
+            <select th:field="*{rol}" id="rol" required onchange="mostrarCamposEspecificos()">
+                <option value="">Seleccione...</option>
+                <option value="ASPIRANTE">Aspirante (Busco empleo)</option>
+                <option value="EMPLEADOR">Empleador (Ofrezco empleo)</option>
+            </select>
+            <span class="error-message" th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre">Nombre Completo *</label>
+            <input type="text" th:field="*{nombre}" id="nombre" required
+                   placeholder="Ej: Juan Pérez García">
+            <span class="error-message" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="correo">Correo Electrónico *</label>
+            <input type="email" th:field="*{correo}" id="correo" required
+                   placeholder="tu@correo.com">
+            <span class="error-message" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></span>
+        </div>
+
+        <!-- Campos específicos para Empleador -->
+        <div class="form-group" id="empresaGroup">
+            <label for="empresa">Nombre de la Empresa *</label>
+            <input type="text" th:field="*{empresa}" id="empresa"
+                   placeholder="Ej: Tecnología Avanzada S.A.">
+            <span class="error-message" th:if="${#fields.hasErrors('empresa')}" th:errors="*{empresa}"></span>
+        </div>
+
+        <!-- Campos específicos para Aspirante -->
+        <div class="form-group" id="habilidadesGroup">
+            <label for="habilidades">Habilidades / Perfil Profesional</label>
+            <textarea th:field="*{habilidades}" id="habilidades"
+                      placeholder="Ej: Java, Spring Boot, MySQL, trabajo en equipo..."></textarea>
+            <span class="error-message" th:if="${#fields.hasErrors('habilidades')}" th:errors="*{habilidades}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="contrasena">Contraseña *</label>
+            <input type="password" th:field="*{contrasena}" id="contrasena" required
+                   placeholder="Mínimo 6 caracteres">
+            <span class="error-message" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmarContrasena">Confirmar Contraseña *</label>
+            <input type="password" th:field="*{confirmarContrasena}" id="confirmarContrasena" required
+                   placeholder="Repite tu contraseña">
+            <span class="error-message" th:if="${#fields.hasErrors('confirmarContrasena')}" th:errors="*{confirmarContrasena}"></span>
+        </div>
+
+        <button type="submit" class="btn">Registrarse</button>
+    </form>
+
+    <div class="login-link">
+        ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a>
+    </div>
+
+    <div class="back-link">
+        <a th:href="@{/}">← Volver al inicio</a>
+    </div>
+</div>
+
+<script>
+    function mostrarCamposEspecificos() {
+        var rol = document.getElementById('rol').value;
+        var empresaGroup = document.getElementById('empresaGroup');
+        var habilidadesGroup = document.getElementById('habilidadesGroup');
+        var empresaInput = document.getElementById('empresa');
+
+        if (rol === 'EMPLEADOR') {
+            empresaGroup.style.display = 'block';
+            habilidadesGroup.style.display = 'none';
+            empresaInput.required = true;
+        } else if (rol === 'ASPIRANTE') {
+            empresaGroup.style.display = 'none';
+            habilidadesGroup.style.display = 'block';
+            empresaInput.required = false;
+        } else {
+            empresaGroup.style.display = 'none';
+            habilidadesGroup.style.display = 'none';
+            empresaInput.required = false;
+        }
+    }
+
+    // Ejecutar al cargar la página por si hay errores de validación
+    document.addEventListener('DOMContentLoaded', function() {
+        mostrarCamposEspecificos();
+    });
+</script>
+</body>
+</html>

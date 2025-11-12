@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Solicitudes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: #48bb78;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .solicitudes-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .solicitud-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .solicitud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .solicitud-title {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .empresa {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-pendiente {
+            background: #fff4e6;
+            color: #cc6600;
+        }
+
+        .badge-revisada {
+            background: #e6f7ff;
+            color: #0066cc;
+        }
+
+        .badge-aceptada {
+            background: #e6ffe6;
+            color: #00cc00;
+        }
+
+        .badge-rechazada {
+            background: #ffe6e6;
+            color: #cc0000;
+        }
+
+        .solicitud-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 10px;
+            color: #666;
+        }
+
+        .no-results h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<!-- NAVBAR ASPIRANTE -->
+<!-- NAVBAR ASPIRANTE RESPONSIVE -->
+<style>
+    .navbar-aspirante {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+
+    .navbar-links a:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .btn-logout {
+        padding: 0.5rem 1.5rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: white;
+        color: #48bb78;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        .navbar-links {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 0;
+            z-index: 1000;
+        }
+
+        .navbar-links.active {
+            display: flex;
+        }
+
+        .navbar-links a {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navbar-links form {
+            width: 100%;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+    }
+    /* ===== ESTILOS NAVBAR RESPONSIVE ===== */
+        .navbar-empleador {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .navbar-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* ===== CSS ADICIONAL RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            /* Navbar móvil */
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .navbar-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                gap: 0;
+                z-index: 1000;
+            }
+
+            .navbar-links.active {
+                display: flex;
+            }
+
+            .navbar-links a {
+                width: 100%;
+                text-align: center;
+                padding: 1rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .navbar-links form {
+                width: 100%;
+            }
+
+            .btn-logout {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Contenido general */
+            body {
+                padding-top: 0;
+            }
+
+            .container {
+                padding: 0 1rem !important;
+                margin: 1rem auto !important;
+            }
+
+            /* Cards */
+            .welcome-card, .stat-card, .action-card {
+                padding: 1rem !important;
+            }
+
+            /* Grids a una columna */
+            .stats-grid, .actions-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Textos más pequeños */
+            h1 {
+                font-size: 1.5rem !important;
+            }
+
+            h2 {
+                font-size: 1.3rem !important;
+            }
+
+            .stat-card .icon {
+                font-size: 2rem;
+            }
+
+            .stat-card .number {
+                font-size: 2rem;
+            }
+
+            /* Botones más grandes en móvil */
+            .btn, button, input[type="submit"], .action-card a {
+                min-height: 44px;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* Tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 90% !important;
+            }
+
+            .stats-grid, .actions-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+</style>
+
+<nav class="navbar-aspirante">
+    <div class="navbar-container">
+        <h1 class="navbar-brand">🎯 Portal Empleo</h1>
+
+        <button class="menu-toggle" onclick="toggleMenuAspirante()">☰</button>
+
+        <div class="navbar-links" id="navbarLinksAspirante">
+            <a href="#" th:href="@{/aspirante/dashboard}">🏠 Inicio</a>
+            <a href="#" th:href="@{/aspirante/vacantes}">🔍 Buscar</a>
+            <a href="#" th:href="@{/aspirante/solicitudes}">📄 Solicitudes</a>
+            <a href="#" th:href="@{/aspirante/notificaciones}">🔔 Avisos</a>
+            <a href="#" th:href="@{/aspirante/perfil}">👤 Perfil</a>
+
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenuAspirante() {
+        const menu = document.getElementById('navbarLinksAspirante');
+        menu.classList.toggle('active');
+    }
+
+    // Cerrar menú al hacer click en un link (solo móvil)
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('#navbarLinksAspirante a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navbarLinksAspirante').classList.remove('active');
+            });
+        });
+    }
+</script>
+
+
+<div class="container">
+    <div th:if="${success}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <div th:if="${solicitudes != null and !solicitudes.isEmpty()}" class="solicitudes-grid">
+        <div th:each="solicitud : ${solicitudes}" class="solicitud-card">
+            <div class="solicitud-header">
+                <div>
+                    <h3 class="solicitud-title" th:text="${solicitud.vacante.titulo}"></h3>
+                    <p class="empresa" th:text="${solicitud.vacante.empleador.empresa}"></p>
+                </div>
+                <span class="badge"
+                      th:classappend="${'badge-' + #strings.toLowerCase(solicitud.estado.name())}"
+                      th:text="${solicitud.estado.displayName}">
+                    </span>
+            </div>
+
+            <div class="solicitud-info">
+                <div class="info-item">
+                    <span>📅</span>
+                    <span th:text="${'Aplicado: ' + #temporals.format(solicitud.fechaSolicitud, 'dd/MM/yyyy')}"></span>
+                </div>
+                <div class="info-item">
+                    <span>📍</span>
+                    <span th:text="${solicitud.vacante.ubicacion ?: 'No especificada'}"></span>
+                </div>
+                <div class="info-item" th:if="${solicitud.cvAdjunto != null}">
+                    <span>📎</span>
+                    <span>CV adjunto</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${solicitudes == null or solicitudes.isEmpty()}" class="no-results">
+        <h3>📭 No tienes solicitudes aún</h3>
+        <p>Comienza a aplicar a vacantes para ver tus solicitudes aquí.</p>
+        <br>
+        <a th:href="@{/aspirante/vacantes}" style="color: #48bb78; text-decoration: none; font-weight: 600;">
+            🔍 Buscar Vacantes →
+        </a>
+    </div>
+</div>
+</body>
+</html>

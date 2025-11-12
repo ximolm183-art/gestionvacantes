@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Vacantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .navbar a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .navbar a:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .header-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-section h2 {
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .btn-nueva {
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-nueva:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .vacantes-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-publicada {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-borrador {
+            background: #ffc107;
+            color: #856404;
+        }
+
+        .badge-cerrada {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-tipo {
+            background: #6c757d;
+            color: white
+            ;
+            margin-left: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-editar {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-editar:hover {
+            background: #5568d3;
+        }
+
+        .btn-eliminar {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-eliminar:hover {
+            background: #c82333;
+        }
+
+        .no-vacantes {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .no-vacantes h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .no-vacantes a {
+            display: inline-block;
+            margin-top: 1rem;
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- NAVBAR EMPLEADOR -->
+<!-- NAVBAR EMPLEADOR RESPONSIVE -->
+<style>
+    .navbar-empleador {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+
+    .navbar-links a:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .btn-logout {
+        padding: 0.5rem 1.5rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: white;
+        color: #667eea;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        .navbar-links {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 0;
+        }
+
+        .navbar-links.active {
+            display: flex;
+        }
+
+        .navbar-links a {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navbar-links form {
+            width: 100%;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+    }
+</style>
+
+<nav class="navbar-empleador">
+    <div class="navbar-container">
+        <h1 class="navbar-brand">📊 Reportes</h1>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="navbar-links" id="navbarLinks">
+            <a href="#" th:href="@{/empleador/dashboard}">🏠 Inicio</a>
+            <a href="#" th:href="@{/empleador/vacantes}">📋 Vacantes</a>
+            <a href="#" th:href="@{/empleador/reportes/vacantes}">📊 Reportes</a>
+            <a href="#" th:href="@{/empleador/solicitudes}">📬 Solicitudes</a>
+            <a href="#" th:href="@{/empleador/perfil}">👤 Perfil</a>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenu() {
+            const menu = document.getElementById('navbarLinks');
+            if (menu) {
+                menu.classList.toggle('active');
+            }
+        }
+
+        // Cerrar menú al hacer click fuera de él
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('navbarLinks');
+            const toggle = document.querySelector('.menu-toggle');
+
+            if (menu && toggle) {
+                const isClickInside = menu.contains(event.target) || toggle.contains(event.target);
+
+                if (!isClickInside && menu.classList.contains('active')) {
+                    menu.classList.remove('active');
+                }
+            }
+        });
+
+        // Cerrar menú al hacer click en un link
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.navbar-links a');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    const menu = document.getElementById('navbarLinks');
+                    if (menu && window.innerWidth <= 768) {
+                        menu.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Cerrar menú al redimensionar ventana
+        window.addEventListener('resize', function() {
+            const menu = document.getElementById('navbarLinks');
+            if (menu && window.innerWidth > 768) {
+                menu.classList.remove('active');
+            }
+        });
+</script>
+
+
+<div class="container">
+    <!-- Mensajes -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <!-- Header -->
+    <div class="header-section">
+        <div>
+            <h2>Vacantes Publicadas</h2>
+            <p style="color: #666; margin-top: 0.5rem;">
+                Empresa: <strong th:text="${empleador?.empresa}"></strong>
+            </p>
+        </div>
+        <a th:href="@{/empleador/vacantes/nueva}" class="btn-nueva">
+            ➕ Nueva Vacante
+        </a>
+    </div>
+
+    <!-- Tabla de Vacantes -->
+    <div th:if="${vacantes != null and !vacantes.isEmpty()}" class="vacantes-table">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Ubicación</th>
+                <th>Tipo</th>
+                <th>Salario</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vacante : ${vacantes}">
+                <td th:text="${vacante.id}"></td>
+                <td>
+                    <strong th:text="${vacante.titulo}"></strong>
+                    <br>
+                    <small style="color: #666;" th:text="${#strings.abbreviate(vacante.descripcion, 50)}"></small>
+                </td>
+                <td th:text="${vacante.ubicacion ?: 'No especificada'}"></td>
+                <td>
+                    <span class="badge badge-tipo" th:text="${vacante.tipoTrabajo.displayName}"></span>
+                </td>
+                <td>
+                            <span th:if="${vacante.salario != null}"
+                                  th:text="${'$' + #numbers.formatDecimal(vacante.salario, 0, 'COMMA', 2, 'POINT')}">
+                            </span>
+                    <span th:unless="${vacante.salario != null}">-</span>
+                </td>
+                <td>
+                            <span class="badge"
+                                  th:classappend="${'badge-' + #strings.toLowerCase(vacante.estado.name())}"
+                                  th:text="${vacante.estado.displayName}">
+                            </span>
+                </td>
+                <td th:text="${#temporals.format(vacante.fechaPublicacion, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <div class="actions">
+                        <a th:href="@{'/empleador/vacantes/' + ${vacante.id} + '/editar'}"
+                           class="btn btn-editar">
+                            ✏️ Editar
+                        </a>
+                        <form th:action="@{'/empleador/vacantes/' + ${vacante.id} + '/eliminar'}"
+                              method="post"
+                              style="display: inline;"
+                              onsubmit="return confirm('¿Estás seguro de eliminar esta vacante?');">
+                            <button type="submit" class="btn btn-eliminar">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Sin vacantes -->
+    <div th:if="${vacantes == null or vacantes.isEmpty()}"
+         class="vacantes-table no-vacantes">
+        <h3>📭 No tienes vacantes publicadas</h3>
+        <p>Comienza publicando tu primera vacante para atraer talento.</p>
+        <a th:href="@{/empleador/vacantes/nueva}">➕ Publicar Primera Vacante</a>
+    </div>
+</div>
+</body>
+</html>

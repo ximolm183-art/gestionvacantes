@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: #48bb78;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .navbar a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .profile-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-name {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .profile-form-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-form-card h2 {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #48bb78;
+        }
+
+        input[type="email"]:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-hint {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #48bb78;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border-left: 4px solid #48bb78;
+        }
+
+        .info-section h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+<!-- NAVBAR ASPIRANTE -->
+<!-- NAVBAR ASPIRANTE RESPONSIVE -->
+<style>
+    .navbar-aspirante {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+
+    .navbar-links a:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .btn-logout {
+        padding: 0.5rem 1.5rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: white;
+        color: #48bb78;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        .navbar-links {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 0;
+            z-index: 1000;
+        }
+
+        .navbar-links.active {
+            display: flex;
+        }
+
+        .navbar-links a {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navbar-links form {
+            width: 100%;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+    }
+    /* ===== ESTILOS NAVBAR RESPONSIVE ===== */
+        .navbar-empleador {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .navbar-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* ===== CSS ADICIONAL RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            /* Navbar móvil */
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .navbar-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                gap: 0;
+                z-index: 1000;
+            }
+
+            .navbar-links.active {
+                display: flex;
+            }
+
+            .navbar-links a {
+                width: 100%;
+                text-align: center;
+                padding: 1rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .navbar-links form {
+                width: 100%;
+            }
+
+            .btn-logout {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Contenido general */
+            body {
+                padding-top: 0;
+            }
+
+            .container {
+                padding: 0 1rem !important;
+                margin: 1rem auto !important;
+            }
+
+            /* Cards */
+            .welcome-card, .stat-card, .action-card {
+                padding: 1rem !important;
+            }
+
+            /* Grids a una columna */
+            .stats-grid, .actions-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Textos más pequeños */
+            h1 {
+                font-size: 1.5rem !important;
+            }
+
+            h2 {
+                font-size: 1.3rem !important;
+            }
+
+            .stat-card .icon {
+                font-size: 2rem;
+            }
+
+            .stat-card .number {
+                font-size: 2rem;
+            }
+
+            /* Botones más grandes en móvil */
+            .btn, button, input[type="submit"], .action-card a {
+                min-height: 44px;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* Tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 90% !important;
+            }
+
+            .stats-grid, .actions-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+</style>
+
+<nav class="navbar-aspirante">
+    <div class="navbar-container">
+        <h1 class="navbar-brand">🎯 Portal Empleo</h1>
+
+        <button class="menu-toggle" onclick="toggleMenuAspirante()">☰</button>
+
+        <div class="navbar-links" id="navbarLinksAspirante">
+            <a href="#" th:href="@{/aspirante/dashboard}">🏠 Inicio</a>
+            <a href="#" th:href="@{/aspirante/vacantes}">🔍 Buscar</a>
+            <a href="#" th:href="@{/aspirante/solicitudes}">📄 Solicitudes</a>
+            <a href="#" th:href="@{/aspirante/notificaciones}">🔔 Avisos</a>
+            <a href="#" th:href="@{/aspirante/perfil}">👤 Perfil</a>
+
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenuAspirante() {
+        const menu = document.getElementById('navbarLinksAspirante');
+        menu.classList.toggle('active');
+    }
+
+    // Cerrar menú al hacer click en un link (solo móvil)
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('#navbarLinksAspirante a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navbarLinksAspirante').classList.remove('active');
+            });
+        });
+    }
+</script>
+
+
+<div class="container">
+    <!-- Header del perfil -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            👤
+        </div>
+        <h2 class="profile-name" th:text="${aspirante.nombre}"></h2>
+        <p class="profile-email" th:text="${aspirante.correo}"></p>
+    </div>
+
+    <!-- Formulario de edición -->
+    <div class="profile-form-card">
+        <h2>Editar Información</h2>
+
+        <div th:if="${success}" class="alert alert-success">
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-error">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/aspirante/perfil}" method="post">
+
+            <div class="form-group">
+                <label for="nombre">Nombre Completo *</label>
+                <input type="text" id="nombre" name="nombre"
+                       th:value="${aspirante.nombre}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo"
+                       th:value="${aspirante.correo}" disabled>
+                <p class="form-hint">El correo no puede ser modificado</p>
+            </div>
+
+            <div class="form-group">
+                <label for="habilidades">Habilidades / Perfil Profesional</label>
+                <textarea id="habilidades" name="habilidades"
+                          placeholder="Describe tus habilidades, experiencia y áreas de interés...&#10;&#10;Ejemplo:&#10;- Java, Spring Boot, MySQL&#10;- 2 años de experiencia en desarrollo web&#10;- Trabajo en equipo, resolución de problemas"
+                          th:text="${aspirante.habilidades}"></textarea>
+                <p class="form-hint">Esto ayudará a los empleadores a conocerte mejor</p>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-primary">
+                    💾 Guardar Cambios
+                </button>
+                <a th:href="@{/aspirante/dashboard}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+
+        <div class="info-section">
+            <h3>💡 Consejos para tu perfil</h3>
+            <p>
+                • Mantén tu información actualizada<br>
+                • Describe claramente tus habilidades técnicas<br>
+                • Menciona tu experiencia relevante<br>
+                • Sé específico con las tecnologías que dominas
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

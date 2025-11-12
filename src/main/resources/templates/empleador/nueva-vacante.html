@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Vacante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .navbar a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .navbar a:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .form-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .form-card h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<!-- NAVBAR EMPLEADOR -->
+<!-- NAVBAR EMPLEADOR RESPONSIVE -->
+<style>
+    .navbar-empleador {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+
+    .navbar-links a:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .btn-logout {
+        padding: 0.5rem 1.5rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: white;
+        color: #667eea;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        .navbar-links {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 0;
+        }
+
+        .navbar-links.active {
+            display: flex;
+        }
+
+        .navbar-links a {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navbar-links form {
+            width: 100%;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+    }
+</style>
+
+<nav class="navbar-empleador">
+    <div class="navbar-container">
+        <h1 class="navbar-brand">📊 Reportes</h1>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="navbar-links" id="navbarLinks">
+            <a href="#" th:href="@{/empleador/dashboard}">🏠 Inicio</a>
+            <a href="#" th:href="@{/empleador/vacantes}">📋 Vacantes</a>
+            <a href="#" th:href="@{/empleador/reportes/vacantes}">📊 Reportes</a>
+            <a href="#" th:href="@{/empleador/solicitudes}">📬 Solicitudes</a>
+            <a href="#" th:href="@{/empleador/perfil}">👤 Perfil</a>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenu() {
+            const menu = document.getElementById('navbarLinks');
+            if (menu) {
+                menu.classList.toggle('active');
+            }
+        }
+
+        // Cerrar menú al hacer click fuera de él
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('navbarLinks');
+            const toggle = document.querySelector('.menu-toggle');
+
+            if (menu && toggle) {
+                const isClickInside = menu.contains(event.target) || toggle.contains(event.target);
+
+                if (!isClickInside && menu.classList.contains('active')) {
+                    menu.classList.remove('active');
+                }
+            }
+        });
+
+        // Cerrar menú al hacer click en un link
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.navbar-links a');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    const menu = document.getElementById('navbarLinks');
+                    if (menu && window.innerWidth <= 768) {
+                        menu.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Cerrar menú al redimensionar ventana
+        window.addEventListener('resize', function() {
+            const menu = document.getElementById('navbarLinks');
+            if (menu && window.innerWidth > 768) {
+                menu.classList.remove('active');
+            }
+        });
+</script>
+
+<div class="container">
+    <div class="form-card">
+        <h2>Crear Nueva Vacante</h2>
+
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <form th:action="@{/empleador/vacantes/nueva}" method="post">
+            <!-- Título -->
+            <div class="form-group">
+                <label for="titulo">Título de la Vacante <span class="required">*</span></label>
+                <input type="text"
+                       id="titulo"
+                       name="titulo"
+                       placeholder="Ej: Desarrollador Full Stack"
+                       required>
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-group">
+                <label for="descripcion">Descripción <span class="required">*</span></label>
+                <textarea id="descripcion"
+                          name="descripcion"
+                          placeholder="Describe las responsabilidades y el día a día del puesto..."
+                          required></textarea>
+            </div>
+
+            <!-- Requisitos -->
+            <div class="form-group">
+                <label for="requisitos">Requisitos</label>
+                <textarea id="requisitos"
+                          name="requisitos"
+                          placeholder="Ej: 2 años de experiencia, conocimientos en Java, Spring Boot..."></textarea>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="form-group">
+                <label for="ubicacion">Ubicación</label>
+                <input type="text"
+                       id="ubicacion"
+                       name="ubicacion"
+                       placeholder="Ej: Ciudad de México, Remoto">
+            </div>
+
+            <!-- Tipo de Trabajo -->
+            <div class="form-group">
+                <label for="tipoTrabajo">Tipo de Trabajo <span class="required">*</span></label>
+                <select id="tipoTrabajo" name="tipoTrabajo" required>
+                    <option value="">Selecciona...</option>
+                    <option th:each="tipo : ${tiposTrabajo}"
+                            th:value="${tipo}"
+                            th:text="${tipo.displayName}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Salario -->
+            <div class="form-group">
+                <label for="salario">Salario Mensual</label>
+                <input type="number"
+                       id="salario"
+                       name="salario"
+                       step="0.01"
+                       placeholder="Ej: 25000.00">
+                <small style="color: #666;">Déjalo vacío si es "A convenir"</small>
+            </div>
+
+            <!-- Estado -->
+            <div class="form-group">
+                <label for="estado">Estado de la Vacante <span class="required">*</span></label>
+                <select id="estado" name="estado" required>
+                    <option value="">Selecciona...</option>
+                    <option value="BORRADOR">📝 Borrador (Solo tú puedes verla)</option>
+                    <option value="PUBLICADA" selected>✅ Publicada (Visible para aspirantes)</option>
+                    <option value="CERRADA">🔒 Cerrada (No visible)</option>
+                </select>
+                <small style="color: #666; display: block; margin-top: 0.5rem;">
+                    • <strong>Borrador:</strong> Guarda la vacante pero no la publica aún<br>
+                    • <strong>Publicada:</strong> Los aspirantes pueden verla y aplicar<br>
+                    • <strong>Cerrada:</strong> Ya no está disponible (envía emails a aspirantes)
+                </small>
+            </div>
+
+
+            <!-- Botones -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">💾 Crear Vacante</button>
+                <a th:href="@{/empleador/vacantes}" class="btn btn-secondary">❌ Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

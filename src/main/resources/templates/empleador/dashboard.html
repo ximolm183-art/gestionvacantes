@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empleador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-logout {
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-card h2 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-card p {
+            color: #666;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .action-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-card h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .action-card a:hover {
+            background: #5568d3;
+        }
+        /* ===== ESTILOS NAVBAR RESPONSIVE ===== */
+        .navbar-empleador {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .navbar-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* ===== CSS ADICIONAL RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            /* Navbar móvil */
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .navbar-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                gap: 0;
+                z-index: 1000;
+            }
+
+            .navbar-links.active {
+                display: flex;
+            }
+
+            .navbar-links a {
+                width: 100%;
+                text-align: center;
+                padding: 1rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .navbar-links form {
+                width: 100%;
+            }
+
+            .btn-logout {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Contenido general */
+            body {
+                padding-top: 0;
+            }
+
+            .container {
+                padding: 0 1rem !important;
+                margin: 1rem auto !important;
+            }
+
+            /* Cards */
+            .welcome-card, .stat-card, .action-card {
+                padding: 1rem !important;
+            }
+
+            /* Grids a una columna */
+            .stats-grid, .actions-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Textos más pequeños */
+            h1 {
+                font-size: 1.5rem !important;
+            }
+
+            h2 {
+                font-size: 1.3rem !important;
+            }
+
+            .stat-card .icon {
+                font-size: 2rem;
+            }
+
+            .stat-card .number {
+                font-size: 2rem;
+            }
+
+            /* Botones más grandes en móvil */
+            .btn, button, input[type="submit"], .action-card a {
+                min-height: 44px;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* Tablets */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 90% !important;
+            }
+
+            .stats-grid, .actions-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<!-- NAVBAR EMPLEADOR -->
+<!-- NAVBAR EMPLEADOR RESPONSIVE -->
+<style>
+    .navbar-empleador {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+
+    .navbar-links a:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .btn-logout {
+        padding: 0.5rem 1.5rem;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+        background: white;
+        color: #667eea;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        .navbar-links {
+            display: none;
+            position: absolute;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            gap: 0;
+        }
+
+        .navbar-links.active {
+            display: flex;
+        }
+
+        .navbar-links a {
+            width: 100%;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navbar-links form {
+            width: 100%;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+    }
+</style>
+
+<nav class="navbar-empleador">
+    <div class="navbar-container">
+        <h1 class="navbar-brand">📊 Reportes</h1>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <div class="navbar-links" id="navbarLinks">
+            <a href="#" th:href="@{/empleador/dashboard}">🏠 Inicio</a>
+            <a href="#" th:href="@{/empleador/vacantes}">📋 Vacantes</a>
+            <a href="#" th:href="@{/empleador/reportes/vacantes}">📊 Reportes</a>
+            <a href="#" th:href="@{/empleador/solicitudes}">📬 Solicitudes</a>
+            <a href="#" th:href="@{/empleador/perfil}">👤 Perfil</a>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">🚪 Salir</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('navbarLinks');
+        if (menu) {
+            menu.classList.toggle('active');
+        }
+    }
+
+    // Cerrar menú al hacer click fuera de él
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('navbarLinks');
+        const toggle = document.querySelector('.menu-toggle');
+
+        if (menu && toggle) {
+            const isClickInside = menu.contains(event.target) || toggle.contains(event.target);
+
+            if (!isClickInside && menu.classList.contains('active')) {
+                menu.classList.remove('active');
+            }
+        }
+    });
+
+    // Cerrar menú al hacer click en un link
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('.navbar-links a');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                const menu = document.getElementById('navbarLinks');
+                if (menu && window.innerWidth <= 768) {
+                    menu.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    // Cerrar menú al redimensionar ventana
+    window.addEventListener('resize', function() {
+        const menu = document.getElementById('navbarLinks');
+        if (menu && window.innerWidth > 768) {
+            menu.classList.remove('active');
+        }
+    });
+</script>
+    <h1>📊 Dashboard Empleador</h1>
+    <div class="user-info">
+        <span th:text="${#authentication.name}"></span>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn-logout">Cerrar Sesión</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="welcome-card">
+        <h2>Bienvenido, Empleador</h2>
+        <p>Gestiona tus vacantes y encuentra al mejor talento para tu empresa.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="icon">📋</div>
+            <div class="number" th:text="${totalVacantes ?: 0}">0</div>
+            <div class="label">Total de Vacantes</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="icon">✅</div>
+            <div class="number" th:text="${vacantesPublicadas ?: 0}">0</div>
+            <div class="label">Vacantes Publicadas</div>
+        </div>
+    </div>
+
+    <div class="actions-grid">
+        <div class="action-card">
+            <div class="icon">📝</div>
+            <h3>Publicar Vacante</h3>
+            <p>Crea una nueva oferta de trabajo</p>
+            <a th:href="@{/empleador/vacantes/nueva}">Crear Vacante</a>
+        </div>
+
+        <div class="action-card">
+            <div class="icon">📋</div>
+            <h3>Mis Vacantes</h3>
+            <p>Ver y gestionar tus vacantes publicadas</p>
+            <a th:href="@{/empleador/vacantes}">Ver Vacantes</a>
+        </div>
+
+        <div class="action-card">
+            <div class="icon">👥</div>
+            <h3>Solicitudes</h3>
+            <p>Revisar candidatos interesados</p>
+            <a th:href="@{/empleador/solicitudes}">Ver Solicitudes</a>
+        </div>
+
+        <div class="action-card">
+            <div class="icon">⚙️</div>
+            <h3>Mi Perfil</h3>
+            <p>Actualiza tu información</p>
+            <a th:href="@{/empleador/perfil}">Editar Perfil</a>
+        </div>
+        <div class="action-card">
+            <div class="icon">📊</div>
+            <h3>Reportes</h3>
+            <p>Analiza el desempeño de tus vacantes</p>
+            <a th:href="@{/empleador/reportes/vacantes}">Ver Reportes</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
